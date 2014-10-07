@@ -1,0 +1,17 @@
+#
+## This file is managed by Chef.
+## Do NOT modify this file directly.
+#
+# <%= @type -%>  Configurations
+
+<% @value.each do |n, v|-%>
+<%= @type -%> <%= n if @type != 'log' -%> {
+  <%if v.kind_of?(Array) -%>
+    <% v.each do |e| -%>
+      <%= e %>
+    <% end -%>
+  <% else -%>
+      <%= v %>
+  <% end -%>
+};
+<% end -%>
