@@ -3,6 +3,8 @@ syslogng Cookbook
 
 This is a [Chef] cookbook for [Syslog-ng].
 
+Not Ready to Use for Production
+=================
 
 ## Repository
 
