@@ -31,6 +31,7 @@ end
 
 protected
   def log_conf
+    logs = syslogng_logs
     temp = template(::File.join(node['syslogng']['include_dir'], new_resource.config_file)) do
       source    'type.conf.erb'
       cookbook  node['syslogng']['cookbook']
@@ -38,7 +39,7 @@ protected
       group     'root'
       mode      '0644'
       variables(
-        :value => syslogng_logs,
+        :value => logs, 
         :type => 'log'
       )
     end
