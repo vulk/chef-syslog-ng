@@ -30,34 +30,38 @@ action :remove do
 end
 
 protected
-  def source_conf
-    temp = template(::File.join(node['syslogng']['include_dir'], new_resource.config_file)) do
-      source    'type.conf.erb'
-      cookbook  node['syslogng']['cookbook']
-      owner     'root'
-      group     'root'
-      mode      '0644'
-      variables(
-        :value => syslogng_sources,
+
+def source_conf
+  srcs = syslogng_sources
+  temp = template(::File.join(node['syslogng']['include_dir'], new_resource.config_file)) do
+    source    'type.conf.erb'
+    cookbook  node['syslogng']['cookbook']
+    owner     'root'
+    group     'root'
+    mode      '0644'
+
+    variables(
+        :value => srcs, 
         :type => 'source'
-      )
-    end
-
-    return temp.updated?
+    )
   end
+  return temp.updated?
+end
 
-  def source_resources
-    run_context.resource_collection.select do |resource|
-      resource.is_a?(Chef::Resource::SyslogngSource)
-    end
+def source_resources
+  run_context.resource_collection.select do |resource|
+    resource.is_a?(Chef::Resource::SyslogngSource)
   end
+end
 
-  def syslogng_sources
-    source_resources.reduce({}) do |hash, resource|
-      if resource.config_file == new_resource.config_file && resource.action == :add
-        hash[resource.name] ||= {}
-        hash[resource.name] = resource.send('value')
-      end
-      hash
+def syslogng_sources
+  source_resources.reduce({}) do |hash, resource|
+    if resource.config_file == new_resource.config_file && resource.action == :add
+      hash[resource.name] ||= {}
+      hash[resource.name] = resource.send('value')
     end
+    hash
   end
+end
+
+
